@@ -1,0 +1,36 @@
+<component-set>
+	<components>
+		<component>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<role-hint>dotnet</role-hint>
+			<implementation>
+				org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+			</implementation>
+			<configuration>
+				<phases>
+					<clean>
+						org.eobjects.build:dotnet-maven-plugin:clean
+					</clean>
+					<validate>
+						org.eobjects.build:dotnet-maven-plugin:restore
+					</validate>
+					<compile>
+						org.eobjects.build:dotnet-maven-plugin:build
+					</compile>
+					<package>
+						org.eobjects.build:dotnet-maven-plugin:pack
+					</package>
+					<verify>
+						org.eobjects.build:dotnet-maven-plugin:publish
+					</verify>
+					<install>
+						org.eobjects.build:dotnet-maven-plugin:nuget-add
+					</install>
+					<deploy>
+						org.eobjects.build:dotnet-maven-plugin:nuget-push
+					</deploy>
+				</phases>
+			</configuration>
+		</component>
+	</components>
+</component-set>

@@ -8,17 +8,14 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 
-@Mojo(name = "build", defaultPhase = LifecyclePhase.COMPILE)
-public class DotnetBuildMojo extends AbstractMojo {
+@Mojo(name = "publish", defaultPhase = LifecyclePhase.VERIFY)
+public class DotnetPublishMojo extends AbstractMojo {
 
     private final DotnetHelper dotnetHelper = DotnetHelper.get();
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         for (File subDirectory : dotnetHelper.getProjectDirectories()) {
-            if (!new File(subDirectory, "project.lock.json").exists()) {
-                dotnetHelper.executeCommand(subDirectory, "dotnet","-c", dotnetHelper.getBuildConfiguration(), "restore");
-            }
-            dotnetHelper.executeCommand(subDirectory, "dotnet build");
+            dotnetHelper.executeCommand(subDirectory, "dotnet", "publish","-c", dotnetHelper.getBuildConfiguration());
         }
     }
 }
