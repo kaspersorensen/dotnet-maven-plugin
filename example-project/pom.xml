@@ -4,12 +4,27 @@
 	<groupId>com.company.product</groupId>
 	<artifactId>example-dotnet-project</artifactId>
 	<version>1.0</version>
-
+	<packaging>pom</packaging>
+	
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.eobjects.build</groupId>
 				<artifactId>dotnet-maven-plugin</artifactId>
+				<executions>
+				  <execution>
+				    <id>dotnet-clean</id>
+				    <goals>
+				      <goal>clean</goal>
+				    </goals>
+				  </execution>
+				  <execution>
+				    <id>dotnet-build</id>
+            <goals>
+              <goal>build</goal>  
+            </goals>
+          </execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
