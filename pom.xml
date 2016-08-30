@@ -10,7 +10,7 @@
 
 	<groupId>org.eobjects.build</groupId>
 	<artifactId>dotnet-maven-plugin</artifactId>
-	<version>0.1</version>
+	<version>0.2-SNAPSHOT</version>
 	<packaging>maven-plugin</packaging>
 
 	<licenses>
@@ -23,7 +23,7 @@
 		<url>https://github.com/kaspersorensen/dotnet-maven-plugin</url>
 		<connection>scm:git:https://github.com/kaspersorensen/dotnet-maven-plugin.git</connection>
 		<developerConnection>scm:git:https://github.com/kaspersorensen/dotnet-maven-plugin.git</developerConnection>
-		<tag>dotnet-maven-plugin-0.1</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<build>
