@@ -71,13 +71,13 @@ public final class PluginHelper {
             final Process process = processBuilder.start();
             exitCode = process.waitFor();
         } catch (Exception e) {
-            throw new MojoFailureException("Command " + Arrays.toString(command) + " failed", e);
+            throw new MojoFailureException("Command (in " + subDirectory + ") " + Arrays.toString(command) + " failed", e);
         }
 
         if (exitCode == 0) {
             // success
         } else {
-            throw new MojoFailureException("Command " + Arrays.toString(command) + " returned non-zero exit code: "
+            throw new MojoFailureException("Command (in " + subDirectory + ") " + Arrays.toString(command) + " returned non-zero exit code: "
                     + exitCode);
         }
     }

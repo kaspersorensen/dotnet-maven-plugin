@@ -15,10 +15,14 @@ public class DotnetPackMojo extends AbstractMojo {
     @Parameter(defaultValue = PluginHelper.PROPERTY_BASEDIR, readonly = true)
     private File basedir;
 
+    @Parameter(defaultValue = "${project.version}", readonly = true)
+    private String version;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         final PluginHelper helper = PluginHelper.get(basedir);
         for (File subDirectory : helper.getProjectDirectories()) {
-            helper.executeCommand(subDirectory, "dotnet", "pack", "-c", helper.getBuildConfiguration());
+            helper.executeCommand(subDirectory, "dotnet", "pack", "-c", helper.getBuildConfiguration(),
+                    "--version-suffix", version);
         }
     }
 }
