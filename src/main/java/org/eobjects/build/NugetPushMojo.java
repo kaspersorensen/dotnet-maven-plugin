@@ -12,27 +12,29 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "nuget-push", defaultPhase = LifecyclePhase.DEPLOY)
 public class NugetPushMojo extends AbstractMojo {
 
-    private final DotnetHelper dotnetHelper = DotnetHelper.get();
-
     @Parameter(property = "nuget-push.repository", alias = "nuget-repository", required = true)
     private String repository;
+    
+    @Parameter( defaultValue = PluginHelper.PROPERTY_BASEDIR, readonly = true )
+    private File basedir;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
+        final PluginHelper helper = PluginHelper.get(basedir);
         if (repository == null || repository.isEmpty()) {
             getLog().info("No 'nuget-repository' configured, skipping");
             return;
         }
 
-        if (!dotnetHelper.isNugetAvailable()) {
+        if (!helper.isNugetAvailable()) {
             getLog().warn("The [nuget] command is not available on path, skipping");
             return;
         }
 
-        for (File subDirectory : dotnetHelper.getProjectDirectories()) {
+        for (File subDirectory : helper.getProjectDirectories()) {
             try {
-                final File nugetPackage = dotnetHelper.getNugetPackage(subDirectory);
+                final File nugetPackage = helper.getNugetPackage(subDirectory);
                 final String nugetPackagePath = nugetPackage.getCanonicalPath();
-                dotnetHelper.executeCommand(subDirectory, "nuget", "push", nugetPackagePath, "-Source", repository);
+                helper.executeCommand(subDirectory, "nuget", "push", nugetPackagePath, "-Source", repository);
             } catch (Exception e) {
                 throw new MojoFailureException("Command [nuget push] failed!", e);
             }

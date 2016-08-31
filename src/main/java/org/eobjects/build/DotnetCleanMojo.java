@@ -13,14 +13,17 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 @Mojo(name = "clean", defaultPhase = LifecyclePhase.CLEAN)
 public class DotnetCleanMojo extends AbstractMojo {
 
-    private final DotnetHelper dotnetHelper = DotnetHelper.get();
+    @Parameter( defaultValue = PluginHelper.PROPERTY_BASEDIR, readonly = true )
+    private File basedir;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        for (File subDirectory : dotnetHelper.getProjectDirectories()) {
+        final PluginHelper helper = PluginHelper.get(basedir);
+        for (File subDirectory : helper.getProjectDirectories()) {
             delete(new File(subDirectory, "bin"));
             delete(new File(subDirectory, "obj"));
             delete(new File(subDirectory, "project.lock.json"));

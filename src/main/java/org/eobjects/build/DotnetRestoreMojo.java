@@ -7,15 +7,18 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
+import org.apache.maven.plugins.annotations.Parameter;
 
 @Mojo(name = "restore", defaultPhase = LifecyclePhase.VALIDATE)
 public class DotnetRestoreMojo extends AbstractMojo {
 
-    private final DotnetHelper dotnetHelper = DotnetHelper.get();
+    @Parameter(defaultValue = PluginHelper.PROPERTY_BASEDIR, readonly = true)
+    private File basedir;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        for (File subDirectory : dotnetHelper.getProjectDirectories()) {
-            dotnetHelper.executeCommand(subDirectory, "dotnet restore");
+        final PluginHelper helper = PluginHelper.get(basedir);
+        for (File subDirectory : helper.getProjectDirectories()) {
+            helper.executeCommand(subDirectory, "dotnet restore");
         }
     }
 }

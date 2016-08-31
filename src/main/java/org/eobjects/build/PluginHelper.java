@@ -7,13 +7,18 @@ import java.util.Arrays;
 
 import org.apache.maven.plugin.MojoFailureException;
 
-public final class DotnetHelper {
+public final class PluginHelper {
+    
+    public static final String PROPERTY_BASEDIR = "${project.basedir}";
 
-    public static DotnetHelper get() {
-        return new DotnetHelper();
+    public static PluginHelper get(File basedir) {
+        return new PluginHelper(basedir);
     }
 
-    private DotnetHelper() {
+    private final File basedir;
+
+    private PluginHelper(File basedir) {
+        this.basedir = basedir;
     }
 
     private final FileFilter projectJsonDirectoryFilter = new FileFilter() {
@@ -40,7 +45,7 @@ public final class DotnetHelper {
     }
 
     public File[] getProjectDirectories() throws MojoFailureException {
-        final File directory = new File(".");
+        final File directory = basedir;
         if (projectJsonDirectoryFilter.accept(directory)) {
             return new File[] { directory };
         }
