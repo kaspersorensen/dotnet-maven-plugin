@@ -8,21 +8,16 @@ import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
 
-import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
-import org.apache.maven.plugins.annotations.Parameter;
 
 @Mojo(name = "clean", defaultPhase = LifecyclePhase.CLEAN)
-public class DotnetCleanMojo extends AbstractMojo {
-
-    @Parameter( defaultValue = PluginHelper.PROPERTY_BASEDIR, readonly = true )
-    private File basedir;
+public class DotnetCleanMojo extends AbstractDotnetMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final PluginHelper helper = PluginHelper.get(basedir);
+        final PluginHelper helper = getPluginHelper();
         for (File subDirectory : helper.getProjectDirectories()) {
             delete(new File(subDirectory, "bin"));
             delete(new File(subDirectory, "obj"));
