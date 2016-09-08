@@ -15,7 +15,7 @@
 	
 	<modules>
 		<module>plugin</module>
-		<!-- <module>example-projects</module> -->
+		<module>example-projects</module>
 	</modules>
 
 	<licenses>
