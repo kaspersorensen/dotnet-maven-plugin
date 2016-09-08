@@ -11,7 +11,7 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "nuget-push", defaultPhase = LifecyclePhase.DEPLOY)
 public class NugetPushMojo extends AbstractDotnetMojo {
 
-    @Parameter(property = "nuget-push.repository", alias = "nuget-repository", required = true)
+    @Parameter(property = "nuget-push.repository", alias = "nuget-repository", required = false)
     private String repository;
     
     public void execute() throws MojoExecutionException, MojoFailureException {
