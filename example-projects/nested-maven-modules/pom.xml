@@ -1,11 +1,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.company.product</groupId>
-	<artifactId>module-y-parent</artifactId>
-	<version>1.0</version>
+	<parent>
+		<groupId>org.eobjects.build</groupId>
+		<artifactId>dotnet-maven-examples</artifactId>
+		<version>0.3-SNAPSHOT</version>
+	</parent>
+	<artifactId>dotnet-maven-examples-module-y-parent</artifactId>
 	<packaging>pom</packaging>
-	
+
 	<modules>
 		<module>ModuleY</module>
 		<module>ModuleY.Tests</module>
@@ -16,7 +19,16 @@
 			<plugin>
 				<groupId>org.eobjects.build</groupId>
 				<artifactId>dotnet-maven-plugin</artifactId>
+				<version>${project.version}</version>
 				<extensions>true</extensions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-release-plugin</artifactId>
+				<configuration>
+					<preparationGoals>dotnet:update-versions</preparationGoals>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

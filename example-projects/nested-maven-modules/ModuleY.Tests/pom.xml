@@ -2,10 +2,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.company.product</groupId>
-		<artifactId>module-y-parent</artifactId>
-		<version>1.0</version>
+		<groupId>org.eobjects.build</groupId>
+		<artifactId>dotnet-maven-examples-module-y-parent</artifactId>
+		<version>0.3-SNAPSHOT</version>
 	</parent>
-	<artifactId>module-y-tests</artifactId>
+	<artifactId>dotnet-maven-examples-module-y-tests</artifactId>
 	<packaging>dotnet</packaging>
 </project>
