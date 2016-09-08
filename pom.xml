@@ -59,6 +59,7 @@
 				<configuration>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 					<goals>deploy</goals>
+					<tagNameFormat>dotnet-maven-plugin-${project.version}</tagNameFormat>
 				</configuration>
 				<dependencies>
 					<dependency>
