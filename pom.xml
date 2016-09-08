@@ -13,6 +13,10 @@
 	<version>0.3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
+	<properties>
+		<maven.version>2.2.1</maven.version>
+	</properties>
+	
 	<modules>
 		<module>plugin</module>
 		<module>example-projects</module>
