@@ -19,7 +19,6 @@
 			<plugin>
 				<groupId>org.eobjects.build</groupId>
 				<artifactId>dotnet-maven-plugin</artifactId>
-				<version>${project.version}</version>
 				<extensions>true</extensions>
 			</plugin>
 
