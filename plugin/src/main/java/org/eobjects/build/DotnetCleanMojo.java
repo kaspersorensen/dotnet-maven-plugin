@@ -18,7 +18,7 @@ public class DotnetCleanMojo extends AbstractDotnetMojo {
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         final PluginHelper helper = getPluginHelper();
-        for (File subDirectory : helper.getProjectDirectories()) {
+        for (File subDirectory : helper.getProjectDirectories(false)) {
             delete(new File(subDirectory, "bin"));
             delete(new File(subDirectory, "obj"));
             delete(new File(subDirectory, "project.lock.json"));

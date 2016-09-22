@@ -43,8 +43,12 @@ public final class PluginHelper {
 
         return nugetPackages[0];
     }
-
+    
     public File[] getProjectDirectories() throws MojoFailureException {
+        return getProjectDirectories(true);
+    }
+
+    public File[] getProjectDirectories(boolean throwExceptionWhenNotFound) throws MojoFailureException {
         final File directory = basedir;
         if (projectJsonDirectoryFilter.accept(directory)) {
             return new File[] { directory };
@@ -52,7 +56,11 @@ public final class PluginHelper {
 
         final File[] directories = directory.listFiles(projectJsonDirectoryFilter);
         if (directories == null || directories.length == 0) {
-            throw new MojoFailureException("Could not find any directories with a 'project.json' file.");
+            if (throwExceptionWhenNotFound) {
+                throw new MojoFailureException("Could not find any directories with a 'project.json' file.");
+            } else {
+                return new File[0];
+            }
         }
         return directories;
     }

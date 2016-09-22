@@ -1,6 +1,7 @@
 package org.eobjects.build;
 
 import java.io.File;
+import java.util.Iterator;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -20,7 +21,7 @@ public class DotnetVersionUpdateMojo extends AbstractDotnetMojo {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        final File[] projectDirectories = getPluginHelper().getProjectDirectories();
+        final File[] projectDirectories = getPluginHelper().getProjectDirectories(false);
         for (File directory : projectDirectories) {
             final File projectJsonFile = new File(directory, "project.json");
             try {
@@ -35,14 +36,55 @@ public class DotnetVersionUpdateMojo extends AbstractDotnetMojo {
         final ObjectNode root = (ObjectNode) objectMapper.readTree(projectJsonFile);
         final JsonNode versionNode = root.get("version");
 
+        boolean updatesMade = false;
+
         final String projectJsonVersion = versionNode == null || versionNode.isMissingNode() ? ""
                 : versionNode.asText();
-
-        if (!version.equals(projectJsonVersion)) {
+        if (needsUpdating(projectJsonVersion, false)) {
             root.put("version", version);
-            getLog().info("Updating version '" + projectJsonVersion + "' to '" + version + "' in file: "
-                    + projectJsonVersion);
+            getLog().info("Updating module version to: " + version);
+            updatesMade = true;
+        }
+
+        final ObjectNode dependenciesNode = (ObjectNode) root.get("dependencies");
+        final Iterator<String> dependencyNames = dependenciesNode.fieldNames();
+        while (dependencyNames.hasNext()) {
+            final String dependencyName = dependencyNames.next();
+            final JsonNode dependencyValue = dependenciesNode.get(dependencyName);
+            if (dependencyValue.isTextual()) {
+                if (needsUpdating(dependencyValue.asText())) {
+                    dependenciesNode.put(dependencyName, version);
+                    getLog().info("Updating dependency '" + dependencyName + "' to version: " + version);
+                    updatesMade = true;
+                }
+            } else if (dependencyValue.isObject()) {
+                final ObjectNode dependencyObject = (ObjectNode) dependencyValue;
+                final JsonNode dependencyVersionNode = dependencyObject.get("version");
+                if (needsUpdating(dependencyVersionNode.asText())) {
+                    dependencyObject.put("version", version);
+                    getLog().info("Updating dependency '" + dependencyName + "' to version: " + version);
+                    updatesMade = true;
+                }
+            }
+        }
+
+        if (updatesMade) {
+            getLog().info("Writing updated file (version '" + version + "'): " + projectJsonVersion);
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(projectJsonFile, root);
         }
+    }
+
+    private boolean needsUpdating(String aVersion) {
+        return needsUpdating(aVersion, true);
+    }
+
+    private boolean needsUpdating(String aVersion, boolean onlySnapshots) {
+        if (aVersion == null) {
+            return false;
+        }
+        if (onlySnapshots && !aVersion.toUpperCase().endsWith("-SNAPSHOT")) {
+            return false;
+        }
+        return !version.equals(aVersion);
     }
 }
