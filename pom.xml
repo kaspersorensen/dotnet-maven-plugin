@@ -19,7 +19,8 @@
 
 	<modules>
 		<module>plugin</module>
-		<module>example-projects</module>
+		<!-- The example project cannot actually run as part of the same build -->
+		<!-- <module>example-projects</module> -->
 	</modules>
 
 	<licenses>
