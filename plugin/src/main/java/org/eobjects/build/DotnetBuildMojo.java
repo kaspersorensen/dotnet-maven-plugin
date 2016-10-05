@@ -17,7 +17,7 @@ public class DotnetBuildMojo extends AbstractDotnetMojo {
                 // restore first if needed
                 helper.executeCommand(subDirectory, "dotnet", "restore");
             }
-            helper.executeCommand(subDirectory, "dotnet", "-c", helper.getBuildConfiguration(), "build");
+            helper.executeCommand(subDirectory, "dotnet", "build");
         }
     }
 }
