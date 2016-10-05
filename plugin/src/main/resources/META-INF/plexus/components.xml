@@ -17,6 +17,9 @@
 					<compile>
 						org.eobjects.build:dotnet-maven-plugin:build
 					</compile>
+					<test>
+            org.eobjects.build:dotnet-maven-plugin:test
+          </test>
 					<package>
 						org.eobjects.build:dotnet-maven-plugin:pack
 					</package>
