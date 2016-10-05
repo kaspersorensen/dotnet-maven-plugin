@@ -14,9 +14,10 @@ public class DotnetBuildMojo extends AbstractDotnetMojo {
         final PluginHelper helper = getPluginHelper();
         for (File subDirectory : helper.getProjectDirectories()) {
             if (!new File(subDirectory, "project.lock.json").exists()) {
-                helper.executeCommand(subDirectory, "dotnet", "-c", helper.getBuildConfiguration(), "restore");
+                // restore first if needed
+                helper.executeCommand(subDirectory, "dotnet", "restore");
             }
-            helper.executeCommand(subDirectory, "dotnet build");
+            helper.executeCommand(subDirectory, "dotnet", "-c", helper.getBuildConfiguration(), "build");
         }
     }
 }
