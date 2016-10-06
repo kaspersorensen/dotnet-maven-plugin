@@ -18,8 +18,8 @@
 						org.eobjects.build:dotnet-maven-plugin:build
 					</compile>
 					<test>
-            org.eobjects.build:dotnet-maven-plugin:test
-          </test>
+						org.eobjects.build:dotnet-maven-plugin:test
+					</test>
 					<package>
 						org.eobjects.build:dotnet-maven-plugin:pack
 					</package>
@@ -32,6 +32,52 @@
 					<deploy>
 						org.eobjects.build:dotnet-maven-plugin:nuget-push
 					</deploy>
+				</phases>
+			</configuration>
+		</component>
+		<component>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<role-hint>dotnet-test</role-hint>
+			<implementation>
+				org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+			</implementation>
+			<configuration>
+				<phases>
+					<clean>
+						org.eobjects.build:dotnet-maven-plugin:clean
+					</clean>
+					<validate>
+						org.eobjects.build:dotnet-maven-plugin:restore
+					</validate>
+					<compile>
+						org.eobjects.build:dotnet-maven-plugin:build
+					</compile>
+					<test>
+						org.eobjects.build:dotnet-maven-plugin:test
+					</test>
+				</phases>
+			</configuration>
+		</component>
+		<component>
+			<role>org.apache.maven.lifecycle.mapping.LifecycleMapping</role>
+			<role-hint>dotnet-integration-test</role-hint>
+			<implementation>
+				org.apache.maven.lifecycle.mapping.DefaultLifecycleMapping
+			</implementation>
+			<configuration>
+				<phases>
+					<clean>
+						org.eobjects.build:dotnet-maven-plugin:clean
+					</clean>
+					<validate>
+						org.eobjects.build:dotnet-maven-plugin:restore
+					</validate>
+					<compile>
+						org.eobjects.build:dotnet-maven-plugin:build
+					</compile>
+					<integration-test>
+						org.eobjects.build:dotnet-maven-plugin:test
+					</integration-test>
 				</phases>
 			</configuration>
 		</component>

@@ -34,5 +34,6 @@
 	<modules>
 		<module>nested-dotnet-projects</module>
 		<module>nested-maven-modules</module>
+		<module>integration-test-module</module>
 	</modules>
 </project>
