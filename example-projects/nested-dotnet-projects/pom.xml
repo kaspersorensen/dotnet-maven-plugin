@@ -14,6 +14,11 @@
 				<groupId>org.eobjects.build</groupId>
 				<artifactId>dotnet-maven-plugin</artifactId>
 				<extensions>true</extensions>
+				<configuration>
+				<environment>
+					<THIS_IS_FROM_MAVEN>Hello dotnet</THIS_IS_FROM_MAVEN>
+				</environment>
+				</configuration>
 			</plugin>
 			
 			<plugin>

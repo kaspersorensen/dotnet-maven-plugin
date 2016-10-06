@@ -11,10 +11,18 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "nuget-push", defaultPhase = LifecyclePhase.DEPLOY)
 public class NugetPushMojo extends AbstractDotnetMojo {
 
-    @Parameter(property = "nuget-push.repository", alias = "nuget-repository", required = false)
+    @Parameter(property = "nuget-repository", required = false)
     private String repository;
-    
+
+    @Parameter(property = "nuget-push-enabled", required = false, defaultValue = "true")
+    private boolean enabled;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (!enabled) {
+            getLog().debug("Disabled, skipping");
+            return;
+        }
+
         final PluginHelper helper = getPluginHelper();
         if (repository == null || repository.isEmpty()) {
             getLog().info("No 'nuget-repository' configured, skipping");

@@ -23,7 +23,15 @@ public class DotnetPackMojo extends AbstractDotnetMojo {
     @Parameter(defaultValue = "${project}", readonly = true)
     MavenProject project;
 
+    @Parameter(property = "dotnet-pack-enabled", required = false, defaultValue = "true")
+    private boolean enabled;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
+        if (!enabled) {
+            getLog().debug("Disabled, skipping");
+            return;
+        }
+
         final PluginHelper helper = getPluginHelper();
         for (File subDirectory : helper.getProjectDirectories()) {
             helper.executeCommand(subDirectory, "dotnet", "pack", "-c", helper.getBuildConfiguration(),

@@ -4,21 +4,31 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Map;
 
 import org.apache.maven.plugin.MojoFailureException;
 
 public final class PluginHelper {
-    
+
     public static final String PROPERTY_BASEDIR = "${project.basedir}";
 
-    public static PluginHelper get(File basedir) {
-        return new PluginHelper(basedir);
+    public static PluginHelper get(File basedir, Map<String, String> environment, boolean skip) {
+        return new PluginHelper(basedir, environment, skip);
     }
 
     private final File basedir;
+    private final Map<String, String> environment;
+    private final boolean skip;
 
-    private PluginHelper(File basedir) {
+    private PluginHelper(File basedir, Map<String, String> environment, boolean skip) {
         this.basedir = basedir;
+        this.environment = environment == null ? Collections.<String, String> emptyMap() : environment;
+        this.skip = skip;
+    }
+    
+    public boolean isSkip() {
+        return skip;
     }
 
     private final FileFilter projectJsonDirectoryFilter = new FileFilter() {
@@ -43,12 +53,16 @@ public final class PluginHelper {
 
         return nugetPackages[0];
     }
-    
+
     public File[] getProjectDirectories() throws MojoFailureException {
         return getProjectDirectories(true);
     }
 
     public File[] getProjectDirectories(boolean throwExceptionWhenNotFound) throws MojoFailureException {
+        if (skip) {
+            return new File[0];
+        }
+        
         final File directory = basedir;
         if (projectJsonDirectoryFilter.accept(directory)) {
             return new File[] { directory };
@@ -72,6 +86,7 @@ public final class PluginHelper {
     public void executeCommand(File subDirectory, String... command) throws MojoFailureException {
         final ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.directory(subDirectory);
+        processBuilder.environment().putAll(environment);
         processBuilder.inheritIO();
 
         final int exitCode;
@@ -79,14 +94,15 @@ public final class PluginHelper {
             final Process process = processBuilder.start();
             exitCode = process.waitFor();
         } catch (Exception e) {
-            throw new MojoFailureException("Command (in " + subDirectory + ") " + Arrays.toString(command) + " failed", e);
+            throw new MojoFailureException("Command (in " + subDirectory + ") " + Arrays.toString(command) + " failed",
+                    e);
         }
 
         if (exitCode == 0) {
             // success
         } else {
-            throw new MojoFailureException("Command (in " + subDirectory + ") " + Arrays.toString(command) + " returned non-zero exit code: "
-                    + exitCode);
+            throw new MojoFailureException("Command (in " + subDirectory + ") " + Arrays.toString(command)
+                    + " returned non-zero exit code: " + exitCode);
         }
     }
 
