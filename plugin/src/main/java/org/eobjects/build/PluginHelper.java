@@ -12,6 +12,8 @@ import org.apache.maven.plugin.MojoFailureException;
 public final class PluginHelper {
 
     public static final String PROPERTY_BASEDIR = "${project.basedir}";
+    
+    public static final String PROPERTY_BUILD_DIR = "${project.build.directory}";
 
     public static PluginHelper get(File basedir, Map<String, String> environment, boolean skip) {
         return new PluginHelper(basedir, environment, skip);

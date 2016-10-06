@@ -76,8 +76,11 @@
 						org.eobjects.build:dotnet-maven-plugin:build
 					</compile>
 					<integration-test>
-						org.eobjects.build:dotnet-maven-plugin:test
+						org.eobjects.build:dotnet-maven-plugin:integration-test-run
 					</integration-test>
+					<verify>
+						org.eobjects.build:dotnet-maven-plugin:integration-test-verify
+					</verify>
 				</phases>
 			</configuration>
 		</component>

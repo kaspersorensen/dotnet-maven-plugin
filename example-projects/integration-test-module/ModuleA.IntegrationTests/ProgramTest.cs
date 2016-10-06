@@ -11,5 +11,12 @@ namespace ModuleA
             var o = new Program();
             Assert.Equal("Hello A", o.GetMessage());
         }
+        
+        [Fact]
+        public void TestGetMessageWillFail()
+        {
+            var o = new Program();
+            Assert.Equal("Hello B", o.GetMessage());
+        }
     }
 }
