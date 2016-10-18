@@ -27,7 +27,7 @@ public final class PluginHelper {
     private PluginHelper(File basedir, Map<String, String> environment, File dotnetPackOutput, boolean skip) {
         this.basedir = basedir;
         this.environment = environment == null ? Collections.<String, String> emptyMap() : environment;
-        this.dotnetPackOutput = dotnetPackOutput == null ? new File("target/nuget") : dotnetPackOutput;
+        this.dotnetPackOutput = dotnetPackOutput == null ? new File("bin") : dotnetPackOutput;
         this.skip = skip;
     }
 
