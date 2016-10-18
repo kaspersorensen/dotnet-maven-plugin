@@ -16,18 +16,22 @@ public final class PluginHelper {
 
     public static final String PROPERTY_BUILD_DIR = "${project.build.directory}";
 
-    public static PluginHelper get(File basedir, Map<String, String> environment, File dotnetPackOutput, boolean skip) {
-        return new PluginHelper(basedir, environment, dotnetPackOutput, skip);
+    public static PluginHelper get(File basedir, Map<String, String> environment, File dotnetPackOutput,
+            String buildConfiguration, boolean skip) {
+        return new PluginHelper(basedir, environment, dotnetPackOutput, buildConfiguration, skip);
     }
 
     private final File basedir;
     private final Map<String, String> environment;
     private final boolean skip;
     private final File dotnetPackOutput;
+    private final String buildConfiguration;
 
-    private PluginHelper(File basedir, Map<String, String> environment, File dotnetPackOutput, boolean skip) {
+    private PluginHelper(File basedir, Map<String, String> environment, File dotnetPackOutput,
+            String buildConfiguration, boolean skip) {
         this.basedir = basedir;
         this.environment = environment == null ? Collections.<String, String> emptyMap() : environment;
+        this.buildConfiguration = buildConfiguration == null ? "Release" : buildConfiguration;
         this.dotnetPackOutput = dotnetPackOutput == null ? new File("bin") : dotnetPackOutput;
         this.skip = skip;
     }
@@ -133,8 +137,7 @@ public final class PluginHelper {
     }
 
     public String getBuildConfiguration() {
-        // hardcoded, but encapsulated for making it dynamic in the future.
-        return "Release";
+        return buildConfiguration;
     }
 
     public boolean isNugetAvailable() {
