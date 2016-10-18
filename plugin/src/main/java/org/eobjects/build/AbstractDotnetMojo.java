@@ -16,8 +16,11 @@ public abstract class AbstractDotnetMojo extends AbstractMojo {
 
     @Parameter(property = "skip", required = false, defaultValue = "false")
     private boolean skip;
+    
+    @Parameter(property = "dotnet.pack.output", required = false)
+    private File packOutput;
 
     public PluginHelper getPluginHelper() {
-        return PluginHelper.get(basedir, environment, skip);
+        return PluginHelper.get(basedir, environment, packOutput, skip);
     }
 }

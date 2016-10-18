@@ -11,11 +11,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "restore", defaultPhase = LifecyclePhase.VALIDATE)
 public class DotnetRestoreMojo extends AbstractDotnetMojo {
     
-    @Parameter(property = "dotnet-restore-enabled", required = false, defaultValue = "true")
-    private boolean enabled;
+    @Parameter(property = "dotnet.restore.enabled", required = false, defaultValue = "true")
+    private boolean restoreEnabled;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (!enabled) {
+        if (!restoreEnabled) {
             getLog().debug("Disabled, skipping");
             return;
         }

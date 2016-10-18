@@ -12,23 +12,25 @@ import org.apache.maven.plugin.MojoFailureException;
 public final class PluginHelper {
 
     public static final String PROPERTY_BASEDIR = "${project.basedir}";
-    
+
     public static final String PROPERTY_BUILD_DIR = "${project.build.directory}";
 
-    public static PluginHelper get(File basedir, Map<String, String> environment, boolean skip) {
-        return new PluginHelper(basedir, environment, skip);
+    public static PluginHelper get(File basedir, Map<String, String> environment, File dotnetPackOutput, boolean skip) {
+        return new PluginHelper(basedir, environment, dotnetPackOutput, skip);
     }
 
     private final File basedir;
     private final Map<String, String> environment;
     private final boolean skip;
+    private final File dotnetPackOutput;
 
-    private PluginHelper(File basedir, Map<String, String> environment, boolean skip) {
+    private PluginHelper(File basedir, Map<String, String> environment, File dotnetPackOutput, boolean skip) {
         this.basedir = basedir;
         this.environment = environment == null ? Collections.<String, String> emptyMap() : environment;
+        this.dotnetPackOutput = dotnetPackOutput == null ? new File("target/nuget") : dotnetPackOutput;
         this.skip = skip;
     }
-    
+
     public boolean isSkip() {
         return skip;
     }
@@ -44,14 +46,26 @@ public final class PluginHelper {
         }
     };
 
+    public File getNugetPackageDir(File subDirectory) {
+        if (dotnetPackOutput.isAbsolute()) {
+            return dotnetPackOutput;
+        }
+        final File directory = new File(subDirectory, dotnetPackOutput.getPath());
+        return directory;
+    }
+
     public File getNugetPackage(File subDirectory) {
-        final File binDirectory = new File(subDirectory, "bin");
-        final File packageDirectory = new File(binDirectory, getBuildConfiguration());
+        final File packageDirectory = getNugetPackageDir(subDirectory);
         final File[] nugetPackages = packageDirectory.listFiles(new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 return name.endsWith(".nupkg");
             }
         });
+
+        if (nugetPackages == null || nugetPackages.length == 0) {
+            throw new IllegalStateException("Could not find NuGet package! ModuleDir=" + subDirectory + ", PackageDir="
+                    + packageDirectory + ", PackOutput=" + dotnetPackOutput);
+        }
 
         return nugetPackages[0];
     }
@@ -64,7 +78,7 @@ public final class PluginHelper {
         if (skip) {
             return new File[0];
         }
-        
+
         final File directory = basedir;
         if (projectJsonDirectoryFilter.accept(directory)) {
             return new File[] { directory };

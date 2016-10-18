@@ -15,7 +15,7 @@ import org.apache.maven.project.MavenProjectHelper;
 public class DotnetPackMojo extends AbstractDotnetMojo {
 
     @Parameter(defaultValue = "${project.version}", readonly = true)
-    private String version;
+    String version;
 
     @Component
     MavenProjectHelper projectHelper;
@@ -23,18 +23,19 @@ public class DotnetPackMojo extends AbstractDotnetMojo {
     @Parameter(defaultValue = "${project}", readonly = true)
     MavenProject project;
 
-    @Parameter(property = "dotnet-pack-enabled", required = false, defaultValue = "true")
-    private boolean enabled;
+    @Parameter(property = "dotnet.pack.enabled", required = false, defaultValue = "true")
+    boolean packEnabled;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (!enabled) {
+        if (!packEnabled) {
             getLog().debug("Disabled, skipping");
             return;
         }
 
         final PluginHelper helper = getPluginHelper();
         for (File subDirectory : helper.getProjectDirectories()) {
-            helper.executeCommand(subDirectory, "dotnet", "pack", "-c", helper.getBuildConfiguration(),
+            final String output = helper.getNugetPackageDir(subDirectory).getPath();
+            helper.executeCommand(subDirectory, "dotnet", "pack", "-o", output, "-c", helper.getBuildConfiguration(),
                     "--version-suffix", version);
             projectHelper.attachArtifact(project, "project.json", new File(subDirectory, "project.json"));
         }

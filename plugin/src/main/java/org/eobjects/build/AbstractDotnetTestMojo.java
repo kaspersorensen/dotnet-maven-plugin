@@ -16,7 +16,7 @@ public abstract class AbstractDotnetTestMojo extends AbstractDotnetMojo {
         final PluginHelper helper = getPluginHelper();
         for (File subDirectory : helper.getProjectDirectories()) {
             if (isTestRunnable(subDirectory)) {
-                helper.executeCommand(subDirectory, "dotnet", "test");
+                helper.executeCommand(subDirectory, "dotnet", "test", "-c", helper.getBuildConfiguration());
             }
         }
     }

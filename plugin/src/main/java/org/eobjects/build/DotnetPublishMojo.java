@@ -11,11 +11,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "publish", defaultPhase = LifecyclePhase.VERIFY)
 public class DotnetPublishMojo extends AbstractDotnetMojo {
 
-    @Parameter(property = "dotnet-publish-enabled", required = false, defaultValue = "true")
-    private boolean enabled;
+    @Parameter(property = "dotnet.publish.enabled", required = false, defaultValue = "true")
+    private boolean publishEnabled;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (!enabled) {
+        if (!publishEnabled) {
             getLog().debug("Disabled, skipping");
             return;
         }

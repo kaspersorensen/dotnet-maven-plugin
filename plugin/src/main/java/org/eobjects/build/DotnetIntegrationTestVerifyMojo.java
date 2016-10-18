@@ -14,15 +14,15 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "integration-test-verify", defaultPhase = LifecyclePhase.VERIFY)
 public class DotnetIntegrationTestVerifyMojo extends AbstractDotnetTestMojo {
 
-    @Parameter(property = "dotnet-integration-verify-run-enabled", required = false, defaultValue = "true")
-    private boolean enabled;
+    @Parameter(property = "dotnet.integration.verify.enabled", required = false, defaultValue = "true")
+    private boolean integrationTestVerifyEnabled;
 
     @Parameter(defaultValue = PluginHelper.PROPERTY_BUILD_DIR, readonly = true)
     private File buildDir;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
         final Log log = getLog();
-        if (!enabled) {
+        if (!integrationTestVerifyEnabled) {
             log.debug("Disabled, skipping");
             return;
         }

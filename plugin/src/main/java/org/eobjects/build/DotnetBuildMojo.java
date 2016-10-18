@@ -10,12 +10,12 @@ import org.apache.maven.plugins.annotations.Parameter;
 
 @Mojo(name = "build", defaultPhase = LifecyclePhase.COMPILE)
 public class DotnetBuildMojo extends AbstractDotnetMojo {
-    
-    @Parameter(property = "dotnet-build-enabled", required = false, defaultValue = "true")
-    private boolean enabled;
+
+    @Parameter(property = "dotnet.build.enabled", required = false, defaultValue = "true")
+    private boolean buildEnabled;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (!enabled) {
+        if (!buildEnabled) {
             getLog().debug("Disabled, skipping");
             return;
         }
@@ -26,7 +26,7 @@ public class DotnetBuildMojo extends AbstractDotnetMojo {
                 // restore first if needed
                 helper.executeCommand(subDirectory, "dotnet", "restore");
             }
-            helper.executeCommand(subDirectory, "dotnet", "build");
+            helper.executeCommand(subDirectory, "dotnet", "build", "-c", helper.getBuildConfiguration());
         }
     }
 }

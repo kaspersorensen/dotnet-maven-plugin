@@ -15,14 +15,14 @@ public class DotnetIntegrationTestRunMojo extends AbstractDotnetTestMojo {
     public static final String RESULT_VALUE_SUCCESS = "Success";
     public static final String RESULT_FILENAME = "dotnet-maven-plugin-integration-test-result.txt";
 
-    @Parameter(property = "dotnet-integration-test-run-enabled", required = false, defaultValue = "true")
-    private boolean enabled;
+    @Parameter(property = "dotnet.integration.test.run.enabled", required = false, defaultValue = "true")
+    private boolean integrationTestRunEnabled;
 
     @Parameter(defaultValue = PluginHelper.PROPERTY_BUILD_DIR, readonly = true)
     private File buildDir;
 
     public void execute() {
-        if (!enabled) {
+        if (!integrationTestRunEnabled) {
             getLog().debug("Disabled, skipping");
             return;
         }

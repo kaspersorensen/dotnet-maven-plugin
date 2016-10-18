@@ -17,11 +17,11 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "clean", defaultPhase = LifecyclePhase.CLEAN)
 public class DotnetCleanMojo extends AbstractDotnetMojo {
     
-    @Parameter(property = "dotnet-clean-enabled", required = false, defaultValue = "true")
-    private boolean enabled;
+    @Parameter(property = "dotnet.clean.enabled", required = false, defaultValue = "true")
+    private boolean cleanEnabled;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (!enabled) {
+        if (!cleanEnabled) {
             getLog().debug("Disabled, skipping");
             return;
         }

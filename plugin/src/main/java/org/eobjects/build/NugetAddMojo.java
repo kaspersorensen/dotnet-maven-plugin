@@ -11,14 +11,14 @@ import org.apache.maven.plugins.annotations.Parameter;
 @Mojo(name = "nuget-add", defaultPhase = LifecyclePhase.INSTALL)
 public class NugetAddMojo extends AbstractDotnetMojo {
 
-    @Parameter(property = "nuget-add-source", required = false, defaultValue = "~/.nuget/packages")
+    @Parameter(property = "nuget.add.source", required = false, defaultValue = "~/.nuget/packages")
     private String nugetAddSource;
 
-    @Parameter(property = "nuget-add-enabled", required = false, defaultValue = "true")
-    private boolean enabled;
+    @Parameter(property = "nuget.add.enabled", required = false, defaultValue = "true")
+    private boolean nugetAddEnabled;
 
     public void execute() throws MojoExecutionException, MojoFailureException {
-        if (!enabled) {
+        if (!nugetAddEnabled) {
             getLog().debug("Disabled, skipping");
             return;
         }
