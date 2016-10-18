@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.eobjects.build</groupId>
 		<artifactId>dotnet-maven-examples</artifactId>
-		<version>0.7-SNAPSHOT</version>
+		<version>0.8-SNAPSHOT</version>
 	</parent>
 	<artifactId>dotnet-maven-examples-module-x</artifactId>
 	<packaging>dotnet</packaging>
