@@ -6,6 +6,7 @@ import java.io.FilenameFilter;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.maven.plugin.MojoFailureException;
 
@@ -102,7 +103,16 @@ public final class PluginHelper {
     public void executeCommand(File subDirectory, String... command) throws MojoFailureException {
         final ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.directory(subDirectory);
-        processBuilder.environment().putAll(environment);
+        for (Entry<String, String> entry : environment.entrySet()) {
+            final String key = entry.getKey();
+            if (key != null) {
+                String value = entry.getValue();
+                if (value == null) {
+                    value = "";
+                }
+                processBuilder.environment().put(key, value);
+            }
+        }
         processBuilder.inheritIO();
 
         final int exitCode;
