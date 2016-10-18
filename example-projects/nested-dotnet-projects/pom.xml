@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.eobjects.build</groupId>
 		<artifactId>dotnet-maven-examples</artifactId>
-		<version>0.8-SNAPSHOT</version>
+		<version>0.9-SNAPSHOT</version>
 	</parent>
 	<artifactId>dotnet-maven-examples-module-x</artifactId>
 	<packaging>dotnet</packaging>
@@ -15,12 +16,13 @@
 				<artifactId>dotnet-maven-plugin</artifactId>
 				<extensions>true</extensions>
 				<configuration>
-				<environment>
-					<THIS_IS_FROM_MAVEN>Hello dotnet</THIS_IS_FROM_MAVEN>
-				</environment>
+					<buildConfiguration>Debug</buildConfiguration>
+					<environment>
+						<THIS_IS_FROM_MAVEN>Hello dotnet</THIS_IS_FROM_MAVEN>
+					</environment>
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>

@@ -14,7 +14,7 @@ public abstract class AbstractDotnetMojo extends AbstractMojo {
     @Parameter(property = "environment", required = false)
     private Map<String, String> environment;
 
-    @Parameter(property = "skip", required = false, defaultValue = "false")
+    @Parameter(required = false, defaultValue = "false")
     private boolean skip;
 
     @Parameter(property = "dotnet.pack.output", required = false)
