@@ -1,0 +1,44 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.eobjects.build</groupId>
+		<artifactId>dotnet-maven-examples</artifactId>
+		<version>0.9-SNAPSHOT</version>
+	</parent>
+	<artifactId>dotnet-maven-examples-all-configuration-properties</artifactId>
+	<packaging>dotnet</packaging>
+
+	<description>
+	 This project does not actually have any source code attached to it, since the main artifact of interest is this file - the POM. It demonstrates all the configuration options of the dotnet-maven-plugin.
+	</description>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.eobjects.build</groupId>
+				<artifactId>dotnet-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<buildConfiguration>Release</buildConfiguration>
+					<buildEnabled>true</buildEnabled>
+					<cleanEnabled>true</cleanEnabled>
+					<environment>
+						<MY_ENVVAR_1>hello</MY_ENVVAR_1>
+						<MY_ENVVAR_2>world</MY_ENVVAR_2>
+					</environment>
+					<integrationTestRunEnabled>true</integrationTestRunEnabled>
+					<integrationTestVerifyEnabled>true</integrationTestVerifyEnabled>
+					<nugetAddEnabled>true</nugetAddEnabled>
+					<nugetAddSource>~/.nuget/Packages</nugetAddSource>
+					<nugetPushEnabled>true</nugetPushEnabled>
+					<packEnabled>true</packEnabled>
+					<packOutput>bin</packOutput>
+					<repository>https://path/to/repository</repository>
+					<restoreEnabled>true</restoreEnabled>
+					<testEnabled>true</testEnabled>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
