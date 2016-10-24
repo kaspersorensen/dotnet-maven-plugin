@@ -13,10 +13,10 @@ This plugin lets you use the power of Maven to drive .NET core builds.
  * Supports two project layouts: A pom-per-dotnet-module or a single-pom-for-all-dotnet-modules approach. See [example projects](example-projects).
  * The plugin has Maven extensions, allowing it to be idiomatically bound to standard Maven phases by declaring certain packging types:
   * `<packaging>dotnet</packaging>` will bind relevant Maven phases for dotnet component and application projects, including `dotnet pack`, `dotnet publish` and `nuget add`.
-   * If a `<repository>` element is defined in the projects configuration, `nuget push`  is also bound to the `mvn deploy` phase.
- * `<packaging>dotnet-library</packaging>` will bind relevant Maven phases for dotnet class libraries, i.e. excluding `dotnet publish`.
- * `<packaging>dotnet-test</packaging>` will bind relevant Maven phases for dotnet test-only projects, including  `dotnet test`.
- * `<packaging>dotnet-integration-test</packaging>` will bind Maven phase `integration-test` to `dotnet test` and Maven phase to `verify` to the gathering/evaluation of those results, allowing for `post-integration-test` clean-up tasks to take place exiting on test failures.
+    * If a `<repository>` element is defined in the projects configuration, `nuget push`  is also bound to the `mvn deploy` phase.
+  * `<packaging>dotnet-library</packaging>` will bind relevant Maven phases for dotnet class libraries, i.e. excluding `dotnet publish`.
+  * `<packaging>dotnet-test</packaging>` will bind relevant Maven phases for dotnet test-only projects, including  `dotnet test`.
+  * `<packaging>dotnet-integration-test</packaging>` will bind Maven phase `integration-test` to `dotnet test` and Maven phase to `verify` to the gathering/evaluation of those results, allowing for `post-integration-test` clean-up tasks to take place exiting on test failures.
   * All above packaging types also have `clean`, `restore`, `build` bindings
 
 ## Installing
