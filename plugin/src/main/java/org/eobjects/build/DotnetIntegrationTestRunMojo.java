@@ -36,27 +36,19 @@ public class DotnetIntegrationTestRunMojo extends AbstractDotnetTestMojo {
     }
 
     private void writeSuccess() {
-        final File file = new File(buildDir, RESULT_FILENAME);
-        if (file.exists()) {
-            // remove content
-            try (final FileWriter writer = new FileWriter(file)) {
-                writer.write(RESULT_VALUE_SUCCESS);
-            } catch (IOException ioException) {
-                // nothing we can do here - we really don't want to interrupt
-                // the build because the 'verify' phase has to clean up later.
-                getLog().error("Unexpected IOException while writing to " + file, ioException);
-            }
+        final File file = createFile(buildDir, RESULT_FILENAME);
+        // remove content
+        try (final FileWriter writer = new FileWriter(file)) {
+            writer.write(RESULT_VALUE_SUCCESS);
+        } catch (IOException ioException) {
+            // nothing we can do here - we really don't want to interrupt
+            // the build because the 'verify' phase has to clean up later.
+            getLog().error("Unexpected IOException while writing to " + file, ioException);
         }
     }
 
     private void writeFailure(Exception e) {
-        buildDir.mkdirs();
-        final File file = new File(buildDir, RESULT_FILENAME);
-        try {
-            file.createNewFile();
-        } catch (IOException ioException) {
-            getLog().error("Unexpected IOException while creating file " + file, ioException);
-        }
+        final File file = createFile(buildDir, RESULT_FILENAME);
         try (final FileWriter writer = new FileWriter(file)) {
             try (final PrintWriter printWriter = new PrintWriter(writer)) {
                 e.printStackTrace(printWriter);
@@ -66,5 +58,18 @@ public class DotnetIntegrationTestRunMojo extends AbstractDotnetTestMojo {
             // the build because the 'verify' phase has to clean up later.
             getLog().error("Unexpected IOException while writing to " + file, ioException);
         }
+    }
+
+    private File createFile(File buildDir, String resultFilename) {
+        buildDir.mkdirs();
+        final File file = new File(buildDir, RESULT_FILENAME);
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException ioException) {
+                getLog().error("Unexpected IOException while creating file " + file, ioException);
+            }
+        }
+        return file;
     }
 }
