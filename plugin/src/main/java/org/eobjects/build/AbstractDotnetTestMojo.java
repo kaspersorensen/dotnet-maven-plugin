@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public abstract class AbstractDotnetTestMojo extends AbstractDotnetMojo {
 
-	@Parameter(property = "dotnet.test.outputxml", required = false, defaultValue = "TestResults.xml")
+    @Parameter(property = "dotnet.test.outputxml", required = false, defaultValue = "TestResults.xml")
     private String outputXml;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
