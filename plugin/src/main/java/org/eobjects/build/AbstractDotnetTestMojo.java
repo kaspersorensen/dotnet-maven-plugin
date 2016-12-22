@@ -1,6 +1,8 @@
 package org.eobjects.build;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.ArrayList;
 
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugins.annotations.Parameter;
@@ -11,16 +13,22 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public abstract class AbstractDotnetTestMojo extends AbstractDotnetMojo {
 
-    @Parameter(property = "dotnet.test.outputxml", required = false, defaultValue = "TestResults.xml")
-    private String outputXml;
+    @Parameter(property = "dotnet.test.outputxml", required = false)
+    private File outputXml;
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void executeInternal() throws MojoFailureException {
         final PluginHelper helper = getPluginHelper();
+        ArrayList<String> argsList = new ArrayList<String>(Arrays.asList("dotnet", "test", "-c", helper.getBuildConfiguration()));
+        if(outputXml != null) {
+            outputXml.getParentFile().mkdirs();
+            argsList.add("-xml");
+            argsList.add(outputXml.getPath());
+        }
         for (File subDirectory : helper.getProjectDirectories()) {
             if (isTestRunnable(subDirectory)) {
-                helper.executeCommand(subDirectory, "dotnet", "test", "-c", helper.getBuildConfiguration(), "-xml", outputXml);
+                helper.executeCommand(subDirectory, argsList.toArray(new String[argsList.size()]));
             }
         }
     }
