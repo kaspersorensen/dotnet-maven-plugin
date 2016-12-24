@@ -3,11 +3,11 @@
 	<parent>
 		<groupId>org.eobjects.build</groupId>
 		<artifactId>dotnet-maven-parent</artifactId>
-		<version>0.9-SNAPSHOT</version>
+		<version>0.11-SNAPSHOT</version>
 	</parent>
 
 	<artifactId>dotnet-maven-examples</artifactId>
-	<version>0.9-SNAPSHOT</version>
+	<version>0.11-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<build>
