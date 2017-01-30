@@ -36,7 +36,7 @@ The simples use-case it to simply define your project with the packaging type, `
       <plugin>
         <groupId>org.eobjects.build</groupId>
         <artifactId>dotnet-maven-plugin</artifactId>
-        <version>0.10</version>
+        <version>0.11</version>
         <extensions>true</extensions>
       </plugin>
     </plugins>
