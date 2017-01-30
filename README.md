@@ -4,6 +4,8 @@ A Maven plugin for building dotnet projects based on `project.json`.
 
 This plugin lets you use the power of Maven to drive .NET core builds.
 
+[![Build Status: Linux](https://travis-ci.org/kaspersorensen/dotnet-maven-plugin.svg?branch=master)](https://travis-ci.org/kaspersorensen/dotnet-maven-plugin)
+
 ## Features
 
  * Drives the invocation of `dotnet` and `nuget` command line tools for build, test, deploy of .NET core projects.
