@@ -53,7 +53,7 @@ Should you want to, you can configure many aspects of the `dotnet` and `nuget` i
 <plugin>
   <groupId>org.eobjects.build</groupId>
   <artifactId>dotnet-maven-plugin</artifactId>
-  <version>0.10</version>
+  <version>0.11</version>
   <extensions>true</extensions>
   <configuration>
     <buildConfiguration>Release</buildConfiguration>
