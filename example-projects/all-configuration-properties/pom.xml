@@ -34,6 +34,8 @@
 					<nugetPushEnabled>true</nugetPushEnabled>
 					<packEnabled>true</packEnabled>
 					<packOutput>bin</packOutput>
+					<publishEnabled>true</publishEnabled>
+					<publishOutput>target/publish</publishOutput>
 					<repository>https://path/to/repository</repository>
 					<restoreEnabled>true</restoreEnabled>
 					<testEnabled>true</testEnabled>
