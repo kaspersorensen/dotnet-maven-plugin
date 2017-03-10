@@ -19,6 +19,9 @@ public class DotnetPublishMojo extends AbstractDotnetMojo {
     @Parameter(property = "dotnet.publish.output", required = false)
     private String publishOutput;
 
+    @Parameter(property = "dotnet.publish.framework", required = false)
+    private String publishFramework;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!publishEnabled) {
             getLog().debug("Disabled, skipping");
@@ -41,6 +44,10 @@ public class DotnetPublishMojo extends AbstractDotnetMojo {
                     targetPath = publishOutput;
                 }
                 cmd.add(targetPath);
+            }
+            if (publishFramework != null && !publishFramework.isEmpty()) {
+                cmd.add("-f");
+                cmd.add(publishFramework);
             }
             helper.executeCommand(subDirectory, cmd.toArray(new String[cmd.size()]));
         }
