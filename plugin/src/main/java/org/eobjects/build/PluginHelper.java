@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.logging.Log;
 
 public final class PluginHelper {
 
@@ -16,9 +17,9 @@ public final class PluginHelper {
 
     public static final String PROPERTY_BUILD_DIR = "${project.build.directory}";
 
-    public static PluginHelper get(File basedir, Map<String, String> environment, File dotnetPackOutput,
+    public static PluginHelper get(Log log, File basedir, Map<String, String> environment, File dotnetPackOutput,
             String buildConfiguration, boolean skip) {
-        return new PluginHelper(basedir, environment, dotnetPackOutput, buildConfiguration, skip);
+        return new PluginHelper(log, basedir, environment, dotnetPackOutput, buildConfiguration, skip);
     }
 
     private final File basedir;
@@ -26,9 +27,11 @@ public final class PluginHelper {
     private final boolean skip;
     private final File dotnetPackOutput;
     private final String buildConfiguration;
+    private final Log log;
 
-    private PluginHelper(File basedir, Map<String, String> environment, File dotnetPackOutput,
+    private PluginHelper(Log log, File basedir, Map<String, String> environment, File dotnetPackOutput,
             String buildConfiguration, boolean skip) {
+        this.log = log;
         this.basedir = basedir;
         this.environment = environment == null ? Collections.<String, String> emptyMap() : environment;
         this.buildConfiguration = buildConfiguration == null ? "Release" : buildConfiguration;
@@ -40,12 +43,23 @@ public final class PluginHelper {
         return skip;
     }
 
-    private final FileFilter projectJsonDirectoryFilter = new FileFilter() {
+    private final FileFilter projectFileDirectoryFilter = new FileFilter() {
         public boolean accept(File dir) {
             if (dir.isDirectory()) {
-                if (new File(dir, "project.json").exists()) {
+                if (getProjectFile(dir, false) != null) {
                     return true;
                 }
+            }
+            return false;
+        }
+    };
+
+    private final FilenameFilter csProjFilter = new FilenameFilter() {
+
+        @Override
+        public boolean accept(File dir, String name) {
+            if (name.endsWith(".csproj")) {
+                return true;
             }
             return false;
         }
@@ -85,14 +99,14 @@ public final class PluginHelper {
         }
 
         final File directory = basedir;
-        if (projectJsonDirectoryFilter.accept(directory)) {
+        if (projectFileDirectoryFilter.accept(directory)) {
             return new File[] { directory };
         }
 
-        final File[] directories = directory.listFiles(projectJsonDirectoryFilter);
+        final File[] directories = directory.listFiles(projectFileDirectoryFilter);
         if (directories == null || directories.length == 0) {
             if (throwExceptionWhenNotFound) {
-                throw new MojoFailureException("Could not find any directories with a 'project.json' file.");
+                throw new MojoFailureException("Could not find any directories with a project/build file.");
             } else {
                 return new File[0];
             }
@@ -149,5 +163,25 @@ public final class PluginHelper {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public DotnetProjectFile getProjectFile(File directory) {
+        return getProjectFile(directory, true);
+    }
+
+    public DotnetProjectFile getProjectFile(File directory, boolean throwExceptionIfNotFound) {
+        final File projectJson = new File(directory, "project.json");
+        if (projectJson.exists()) {
+            return new ProjectJsonFile(projectJson, log);
+        }
+        final File[] csProjFiles = directory.listFiles(csProjFilter);
+        if (csProjFiles == null || csProjFiles.length == 0) {
+            if (throwExceptionIfNotFound) {
+                throw new IllegalArgumentException("Could not resolve any project/build file in directory: "
+                        + directory);
+            }
+            return null;
+        }
+        return new CsProjFile(csProjFiles[0], log);
     }
 }
