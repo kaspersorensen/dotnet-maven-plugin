@@ -11,6 +11,13 @@ import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.maven.plugin.logging.Log;
 import org.w3c.dom.Document;
@@ -64,6 +71,7 @@ public class CsProjFile implements DotnetProjectFile {
     @Override
     public void setVersion(String version) {
         // TODO: proper implementation
+        throw new UnsupportedOperationException("Updating project version with .csproj files is not yet supported");
     }
 
     @Override
@@ -90,11 +98,26 @@ public class CsProjFile implements DotnetProjectFile {
     @Override
     public void setDependencyVersion(DotnetProjectDependency dependency, String version) {
         // TODO: proper implementation
+        throw new UnsupportedOperationException("Updating dependency version with .csproj files is not yet supported");
     }
 
     @Override
     public void saveChanges() {
-        // TODO: proper implementation
+        try {
+            final Transformer transformer = TransformerFactory.newInstance().newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
+            final Source xmlSource = new DOMSource(document);
+            final Result outputTarget = new StreamResult(file);
+            transformer.transform(xmlSource, outputTarget);
+        } catch (Exception e) {
+            log.warn("Failed to save '" + file + "' as XML.");
+            if (e instanceof RuntimeException) {
+                throw (RuntimeException) e;
+            }
+            throw new RuntimeException(e);
+        }
+
     }
 
     public Document getDocument() {
