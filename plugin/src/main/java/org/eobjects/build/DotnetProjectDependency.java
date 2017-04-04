@@ -10,6 +10,11 @@ public class DotnetProjectDependency {
         this.version = version;
     }
 
+    public DotnetProjectDependency(String name) {
+        this.name = name;
+        this.version = null;
+    }
+
     public String getName() {
         return name;
     }

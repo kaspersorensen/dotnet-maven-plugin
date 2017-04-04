@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -18,10 +19,15 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.apache.maven.plugin.logging.Log;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class CsProjFile implements DotnetProjectFile {
@@ -61,34 +67,48 @@ public class CsProjFile implements DotnetProjectFile {
 
     @Override
     public String getVersion() {
-        final NodeList versionNodes = getDocument().getElementsByTagName("Version");
-        if (versionNodes == null || versionNodes.getLength() == 0) {
+        final String version = (String) xpath("/Project/Version", XPathConstants.STRING);
+        if ("".equals(version)) {
             return null;
         }
-        return versionNodes.item(0).getTextContent();
+        return version;
     }
 
     @Override
     public void setVersion(String version) {
-        // TODO: proper implementation
-        throw new UnsupportedOperationException("Updating project version with .csproj files is not yet supported");
+        final Node versionNode = (Node) xpath("/Project/Version", XPathConstants.NODE);
+
+        final boolean removeVersion = version == null || version.isEmpty();
+        if (versionNode == null) {
+            if (!removeVersion) {
+                final Element newChild = getDocument().createElement("Version");
+                newChild.setTextContent(version);
+                final Node projectNode = getDocument().getFirstChild();
+                final Node firstChild = projectNode.getFirstChild();
+                projectNode.insertBefore(newChild, firstChild);
+            }
+        } else {
+            if (removeVersion) {
+                getDocument().getFirstChild().removeChild(versionNode);
+            } else {
+                versionNode.setTextContent(version);
+            }
+        }
     }
 
     @Override
     public List<DotnetProjectDependency> getDependencies() {
         final List<DotnetProjectDependency> list = new ArrayList<>();
 
-        final NodeList itemGroupElems = getDocument().getElementsByTagName("ItemGroup");
-        if (itemGroupElems != null && itemGroupElems.getLength() > 0) {
-            final Element itemGroup = (Element) itemGroupElems.item(0);
-            final NodeList packageRefElems = itemGroup.getElementsByTagName("PackageReference");
-            if (packageRefElems != null && packageRefElems.getLength() > 0) {
-                for (int i = 0; i < packageRefElems.getLength(); i++) {
-                    final Element packageRef = (Element) packageRefElems.item(i);
-                    final String name = packageRef.getAttribute("Include");
-                    final String version = packageRef.getAttribute("Version");
-                    list.add(new DotnetProjectDependency(name, version));
-                }
+        final NodeList packageRefElems = (NodeList) xpath("/Project/ItemGroup/PackageReference",
+                XPathConstants.NODESET);
+
+        if (packageRefElems != null && packageRefElems.getLength() > 0) {
+            for (int i = 0; i < packageRefElems.getLength(); i++) {
+                final Element packageRef = (Element) packageRefElems.item(i);
+                final String name = packageRef.getAttribute("Include");
+                final String version = packageRef.getAttribute("Version");
+                list.add(new DotnetProjectDependency(name, version));
             }
         }
 
@@ -97,8 +117,21 @@ public class CsProjFile implements DotnetProjectFile {
 
     @Override
     public void setDependencyVersion(DotnetProjectDependency dependency, String version) {
-        // TODO: proper implementation
-        throw new UnsupportedOperationException("Updating dependency version with .csproj files is not yet supported");
+        final NodeList packageRefElems = (NodeList) xpath("/Project/ItemGroup/PackageReference",
+                XPathConstants.NODESET);
+
+        if (packageRefElems != null && packageRefElems.getLength() > 0) {
+            for (int i = 0; i < packageRefElems.getLength(); i++) {
+                final Element packageRef = (Element) packageRefElems.item(i);
+                final String name = packageRef.getAttribute("Include");
+                if (name.equals(dependency.getName())) {
+                    if (version == null || "".equals(version)) {
+                        version = "*";
+                    }
+                    packageRef.setAttribute("Version", version);
+                }
+            }
+        }
     }
 
     @Override
@@ -134,5 +167,14 @@ public class CsProjFile implements DotnetProjectFile {
             }
         }
         return document;
+    }
+
+    private Object xpath(String expression, QName returnType) {
+        final XPath xPath = XPathFactory.newInstance().newXPath();
+        try {
+            return xPath.evaluate(expression, getDocument(), returnType);
+        } catch (XPathExpressionException e) {
+            throw new RuntimeException("Failure to process XPath expression: " + expression, e);
+        }
     }
 }
