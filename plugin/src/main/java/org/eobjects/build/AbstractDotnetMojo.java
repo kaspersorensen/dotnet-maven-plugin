@@ -24,6 +24,6 @@ public abstract class AbstractDotnetMojo extends AbstractMojo {
     private String buildConfiguration;
 
     public PluginHelper getPluginHelper() {
-        return PluginHelper.get(basedir, environment, packOutput, buildConfiguration, skip);
+        return PluginHelper.get(getLog(), basedir, environment, packOutput, buildConfiguration, skip);
     }
 }

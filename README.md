@@ -1,6 +1,6 @@
 # dotnet-maven-plugin
 
-A Maven plugin for building dotnet projects based on `project.json`.
+A Maven plugin for building dotnet projects based on `.csproj` or `project.json` files.
 
 This plugin lets you use the power of Maven to drive .NET core builds.
 
@@ -9,9 +9,9 @@ This plugin lets you use the power of Maven to drive .NET core builds.
 ## Features
 
  * Drives the invocation of `dotnet` and `nuget` command line tools for build, test, deploy of .NET core projects.
- * Runs unittests via `dotnet test` on projects that have a defined `testRunner` in project.json.
+ * Runs unittests via `dotnet test` on projects that have a defined Test Runner.
  * Offers a `mvn clean` option which arguably is currently missing from the `dotnet` CLI tools.
- * Propagates versioning scheme from Maven parent to the `project.json` files of the modules.
+ * Propagates versioning scheme from Maven parent to the `.csproj` or `project.json` files of the modules.
  * Supports two project layouts: A pom-per-dotnet-module or a single-pom-for-all-dotnet-modules approach. See [example projects](example-projects).
  * The plugin has Maven extensions, allowing it to be idiomatically bound to standard Maven phases by declaring certain packging types:
   * `<packaging>dotnet</packaging>` will bind relevant Maven phases for dotnet component and application projects, including `dotnet pack`, `dotnet publish` and `nuget add`.
