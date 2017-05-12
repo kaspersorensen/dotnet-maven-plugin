@@ -12,6 +12,9 @@ public abstract class AbstractDotnetTestMojo extends AbstractDotnetMojo {
     @Parameter(property = "dotnet.test.outputxml", required = false)
     private File outputXml;
 
+    @Parameter(property = "dotnet.test.logger", required = false)
+    private String logger;
+
     public void executeInternal() throws MojoFailureException {
         final PluginHelper helper = getPluginHelper();
         ArrayList<String> argsList = new ArrayList<String>(Arrays.asList("dotnet", "test", "-c", helper.getBuildConfiguration()));
@@ -19,6 +22,10 @@ public abstract class AbstractDotnetTestMojo extends AbstractDotnetMojo {
             outputXml.getParentFile().mkdirs();
             argsList.add("-xml");
             argsList.add(outputXml.getPath());
+        }
+        if(logger != null) {
+            argsList.add("-l");
+            argsList.add(logger);
         }
         for (File subDirectory : helper.getProjectDirectories()) {
             if (isTestRunnable(subDirectory)) {
