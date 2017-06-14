@@ -12,15 +12,15 @@ public abstract class AbstractDotnetTestMojo extends AbstractDotnetMojo {
     @Parameter(property = "dotnet.test.outputxml", required = false)
     private File outputXml;
 
-    @Parameter(property = "dotnet.test.forcexunit", required = false)
-    private Boolean forceXUnit;
+    @Parameter(property = "dotnet.test.test-command", required = false, defaultValue = "test")
+    private String testCommand;
 
     @Parameter(property = "dotnet.test.logger", required = false)
     private String logger;
 
     public void executeInternal() throws MojoFailureException {
         final PluginHelper helper = getPluginHelper();
-        ArrayList<String> argsList = new ArrayList<String>(Arrays.asList("dotnet", forceXUnit ? "xunit" : "test", "-c", helper.getBuildConfiguration()));
+        ArrayList<String> argsList = new ArrayList<String>(Arrays.asList("dotnet", testCommand, "-c", helper.getBuildConfiguration()));
         if(outputXml != null) {
             outputXml.getParentFile().mkdirs();
             argsList.add("-xml");
