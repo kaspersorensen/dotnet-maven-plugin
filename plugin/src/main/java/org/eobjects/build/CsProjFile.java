@@ -68,29 +68,49 @@ public class CsProjFile implements DotnetProjectFile {
     @Override
     public String getVersion() {
         String version = (String) xpath("/Project/PropertyGroup/VersionPrefix", XPathConstants.STRING);
-        if ("".equals(version)){
+    	String vSuffix = (String) xpath("/Project/PropertyGroup/VersionSuffix", XPathConstants.STRING);
+
+    	/*The <Version> tag overrides the Prefix/Suffix pair*/
+    	if ("".equals(version)){
         	version = (String) xpath("/Project/PropertyGroup/Version", XPathConstants.STRING);
+        	if ( !"".equals(version)){
+        		vSuffix = "";
+        	}
         }
+
+    	if (!"".equals(vSuffix)){
+    		version += "-" + vSuffix;
+    	}
+    	
         if ("".equals(version)) {
             return null;
         }
         return version;
     }
 
-    @Override
-    public void setVersion(String version) {
-        final Node versionNode = (Node) xpath("/Project/PropertyGroup/VersionPrefix", XPathConstants.NODE);
+    public void setVersionPart(String element, String version, String pairWithElement)
+    {
+        final Node versionNode = (Node) xpath("/Project/PropertyGroup/" + element, XPathConstants.NODE);
 
         final boolean removeVersion = version == null || version.isEmpty();
         if (versionNode == null) {
             if (!removeVersion) {
-                final Element newPropGroup = getDocument().createElement("PropertyGroup");
-                final Element newVersion = getDocument().createElement("VersionPrefix");
-                newVersion.setTextContent(version);
-                newPropGroup.appendChild(newVersion);
+            	/*Need to create a new node. Try to pair it with the named element if possible.*/
+                final Node pairNode = (Node) xpath("/Project/PropertyGroup/" + pairWithElement, XPathConstants.NODE);
 
-                final Node projectNode = (Node) xpath("/Project", XPathConstants.NODE);
-                projectNode.insertBefore(newPropGroup, projectNode.getFirstChild());
+                Element parentPropGroup = null;
+            	if ( pairNode == null ) {
+            		parentPropGroup = getDocument().createElement("PropertyGroup");
+                    final Node projectNode = (Node) xpath("/Project", XPathConstants.NODE);
+                    projectNode.insertBefore(parentPropGroup, projectNode.getFirstChild());
+            	}
+            	else {
+            		parentPropGroup = (Element) pairNode.getParentNode();
+            	}
+            	
+                final Element newVersion = getDocument().createElement(element);
+                newVersion.setTextContent(version);
+                parentPropGroup.appendChild(newVersion);
             }
         } else {
             if (removeVersion) {
@@ -103,6 +123,30 @@ public class CsProjFile implements DotnetProjectFile {
                 versionNode.setTextContent(version);
             }
         }
+    }
+
+    @Override
+    public void setVersion(String version) {
+        /*Dotnet .csproj versions are stored in a pair of properties now:
+         * 	VersionPrefix
+         *  VersionSuffix
+         *  
+         * The Version element is still supported and overrides the new pair. 
+         * Here we'll parse off the last portion and make that the suffix.
+         */
+    	String versionPrefix = version;
+    	String versionSuffix = "";
+
+    	if ( version != null && !version.isEmpty() ) {
+        	int iSuffix = version.lastIndexOf("-");
+        	if ( -1 != iSuffix ) {
+        		versionSuffix = version.substring( iSuffix+1);
+        		versionPrefix = version.substring(0, iSuffix);
+        	}
+        }
+        
+        setVersionPart("VersionPrefix", versionPrefix, "VersionSuffix");
+        setVersionPart("VersionSuffix", versionSuffix, "VersionPrefix");
     }
 
     @Override

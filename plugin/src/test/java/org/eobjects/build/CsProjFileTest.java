@@ -28,7 +28,7 @@ public class CsProjFileTest {
     public void testGetVersion() {
         assertThat(file1_xUnit.getVersion()).isNull();
         assertThat(file2_msTest.getVersion()).isNull();
-        assertThat(file3_webApp.getVersion()).isNotNull().isEqualTo("1.3.1");
+        assertThat(file3_webApp.getVersion()).isNotNull().isEqualTo("1.3.1-alpha");
     }
 
     @Test
@@ -104,11 +104,33 @@ public class CsProjFileTest {
 
         assertThat(getVersion(testFile)).isNull();
 
-        projectFile.setVersion("42.1337.2");
+        projectFile.setVersion("42.1337.2-alpha");
         projectFile.saveChanges();
 
-        assertThat(getVersion(testFile)).isEqualTo("42.1337.2");
-    }
+        assertThat(getVersion(testFile)).isEqualTo("42.1337.2-alpha");
+        
+        projectFile.setVersion("42.1337.3-");
+        projectFile.saveChanges();
+
+        assertThat(getVersion(testFile)).isEqualTo("42.1337.3");
+
+        projectFile.setVersion(null);
+        projectFile.saveChanges();
+
+        assertThat(getVersion(testFile)).isNull();
+
+        projectFile.setVersion("42.1337.4");
+        projectFile.saveChanges();
+        projectFile.setVersion("42.1337.4-beta");
+        projectFile.saveChanges();
+
+        assertThat(getVersion(testFile)).isEqualTo("42.1337.4-beta");
+
+        projectFile.setVersion("-dev");
+        projectFile.saveChanges();
+
+        assertThat(getVersion(testFile)).isEqualTo("-dev");
+}
 
     private String getVersion(File testFile) {
         return new CsProjFile(testFile, null).getVersion();
