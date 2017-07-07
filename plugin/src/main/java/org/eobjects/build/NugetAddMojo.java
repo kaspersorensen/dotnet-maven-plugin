@@ -24,10 +24,6 @@ public class NugetAddMojo extends AbstractDotnetMojo {
         }
 
         final PluginHelper helper = getPluginHelper();
-        if (!helper.isNugetAvailable()) {
-            getLog().warn("The [nuget] command is not available on path, skipping");
-            return;
-        }
 
         for (File subDirectory : helper.getProjectDirectories()) {
             try {
@@ -42,7 +38,7 @@ public class NugetAddMojo extends AbstractDotnetMojo {
                 }
                 final File nugetPackage = helper.getNugetPackage(subDirectory);
                 final String nugetPackagePath = nugetPackage.getCanonicalPath();
-                helper.executeCommand(subDirectory, "nuget", "add", nugetPackagePath, "-Source", targetPath);
+                helper.executeCommand(subDirectory, "dotnet", "nuget", "push", nugetPackagePath, "-s", targetPath);
             } catch (Exception e) {
                 throw new MojoFailureException("Command [nuget add] failed!", e);
             }
