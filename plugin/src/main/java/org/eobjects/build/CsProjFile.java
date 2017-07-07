@@ -67,7 +67,10 @@ public class CsProjFile implements DotnetProjectFile {
 
     @Override
     public String getVersion() {
-        final String version = (String) xpath("/Project/Version", XPathConstants.STRING);
+        String version = (String) xpath("/Project/PropertyGroup/VersionPrefix", XPathConstants.STRING);
+        if ("".equals(version)){
+        	version = (String) xpath("/Project/PropertyGroup/Version", XPathConstants.STRING);
+        }
         if ("".equals(version)) {
             return null;
         }
@@ -76,20 +79,26 @@ public class CsProjFile implements DotnetProjectFile {
 
     @Override
     public void setVersion(String version) {
-        final Node versionNode = (Node) xpath("/Project/Version", XPathConstants.NODE);
+        final Node versionNode = (Node) xpath("/Project/PropertyGroup/VersionPrefix", XPathConstants.NODE);
 
         final boolean removeVersion = version == null || version.isEmpty();
         if (versionNode == null) {
             if (!removeVersion) {
-                final Element newChild = getDocument().createElement("Version");
-                newChild.setTextContent(version);
-                final Node projectNode = getDocument().getFirstChild();
-                final Node firstChild = projectNode.getFirstChild();
-                projectNode.insertBefore(newChild, firstChild);
+                final Element newPropGroup = getDocument().createElement("PropertyGroup");
+                final Element newVersion = getDocument().createElement("VersionPrefix");
+                newVersion.setTextContent(version);
+                newPropGroup.appendChild(newVersion);
+
+                final Node projectNode = (Node) xpath("/Project", XPathConstants.NODE);
+                projectNode.insertBefore(newPropGroup, projectNode.getFirstChild());
             }
         } else {
             if (removeVersion) {
-                getDocument().getFirstChild().removeChild(versionNode);
+            	final Node versionParent = versionNode.getParentNode();
+            	versionParent.removeChild(versionNode);
+            	if (versionParent.getChildNodes().getLength()==0) {
+            		versionParent.getParentNode().removeChild(versionParent);
+            	}            	
             } else {
                 versionNode.setTextContent(version);
             }
