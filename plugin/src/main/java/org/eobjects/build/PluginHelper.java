@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
@@ -155,27 +154,6 @@ public final class PluginHelper {
         return buildConfiguration;
     }
 
-    public boolean isNugetAvailable() {
-        // This is pretty clunky, but I think the only manageable way to
-        // determine it.
-        try {
-            final ProcessBuilder processBuilder = new ProcessBuilder("nuget", "help");
-            processBuilder.inheritIO();
-            final Process process = processBuilder.start();
-            final boolean exited = process.waitFor(30, TimeUnit.SECONDS);
-            if (!exited) {
-                process.destroy();
-                throw new RuntimeException("The command 'nuget help' failed to finish within 30 seconds!");
-            }
-            final int exitCode = process.exitValue();
-            return exitCode == 0;
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
     public DotnetProjectFile getProjectFile(File directory) {
         return getProjectFile(directory, true);
     }
@@ -188,8 +166,8 @@ public final class PluginHelper {
         final File[] csProjFiles = directory.listFiles(csProjFilter);
         if (csProjFiles == null || csProjFiles.length == 0) {
             if (throwExceptionIfNotFound) {
-                throw new IllegalArgumentException("Could not resolve any project/build file in directory: "
-                        + directory);
+                throw new IllegalArgumentException(
+                        "Could not resolve any project/build file in directory: " + directory);
             }
             return null;
         }

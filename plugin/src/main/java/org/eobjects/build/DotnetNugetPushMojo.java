@@ -9,7 +9,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 @Mojo(name = "nuget-push", defaultPhase = LifecyclePhase.DEPLOY)
-public class NugetPushMojo extends AbstractDotnetMojo {
+public class DotnetNugetPushMojo extends AbstractDotnetMojo {
 
     @Parameter(property = "nuget.push.source", required = false)
     private String repository;
@@ -29,18 +29,13 @@ public class NugetPushMojo extends AbstractDotnetMojo {
             return;
         }
 
-        if (!helper.isNugetAvailable()) {
-            getLog().warn("The [nuget] command is not available on path, skipping");
-            return;
-        }
-
         for (File subDirectory : helper.getProjectDirectories()) {
             try {
                 final File nugetPackage = helper.getNugetPackage(subDirectory);
                 final String nugetPackagePath = nugetPackage.getCanonicalPath();
-                helper.executeCommand(subDirectory, "nuget", "push", nugetPackagePath, "-Source", repository);
+                helper.executeCommand(subDirectory, "dotnet", "nuget", "push", nugetPackagePath, "-s", repository);
             } catch (Exception e) {
-                throw new MojoFailureException("Command [nuget push] failed!", e);
+                throw new MojoFailureException("Command [dotnet nuget push] failed!", e);
             }
         }
     }

@@ -9,7 +9,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 
 @Mojo(name = "nuget-add", defaultPhase = LifecyclePhase.INSTALL)
-public class NugetAddMojo extends AbstractDotnetMojo {
+public class DotnetNugetAddMojo extends AbstractDotnetMojo {
 
     @Parameter(property = "nuget.add.source", required = false, defaultValue = "~/.nuget/packages")
     private String nugetAddSource;
@@ -24,10 +24,6 @@ public class NugetAddMojo extends AbstractDotnetMojo {
         }
 
         final PluginHelper helper = getPluginHelper();
-        if (!helper.isNugetAvailable()) {
-            getLog().warn("The [nuget] command is not available on path, skipping");
-            return;
-        }
 
         for (File subDirectory : helper.getProjectDirectories()) {
             try {
@@ -42,7 +38,7 @@ public class NugetAddMojo extends AbstractDotnetMojo {
                 }
                 final File nugetPackage = helper.getNugetPackage(subDirectory);
                 final String nugetPackagePath = nugetPackage.getCanonicalPath();
-                helper.executeCommand(subDirectory, "nuget", "add", nugetPackagePath, "-Source", targetPath);
+                helper.executeCommand(subDirectory, "dotnet", "nuget", "push", nugetPackagePath, "-s", targetPath);
             } catch (Exception e) {
                 throw new MojoFailureException("Command [nuget add] failed!", e);
             }
