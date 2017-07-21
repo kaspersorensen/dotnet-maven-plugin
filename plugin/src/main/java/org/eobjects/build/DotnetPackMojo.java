@@ -35,8 +35,7 @@ public class DotnetPackMojo extends AbstractDotnetMojo {
         final PluginHelper helper = getPluginHelper();
         for (File subDirectory : helper.getProjectDirectories()) {
             final String output = helper.getNugetPackageDir(subDirectory).getPath();
-            helper.executeCommand(subDirectory, "dotnet", "pack", "-o", output, "-c", helper.getBuildConfiguration(),
-                    "--version-suffix", version);
+            helper.executeCommand(subDirectory, "dotnet", "pack", "-o", output, "-c", helper.getBuildConfiguration());
 
             final DotnetProjectFile projectFile = getPluginHelper().getProjectFile(subDirectory);
 

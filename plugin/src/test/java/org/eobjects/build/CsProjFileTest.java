@@ -26,7 +26,7 @@ public class CsProjFileTest {
 
     @Test
     public void testGetVersion() {
-        assertThat(file1_xUnit.getVersion()).isNull();
+        assertThat(file1_xUnit.getVersion()).isEqualTo("LegacyVersionToBeRemoved");
         assertThat(file2_msTest.getVersion()).isNull();
         assertThat(file3_webApp.getVersion()).isNotNull().isEqualTo("1.3.1-alpha");
     }
@@ -86,7 +86,7 @@ public class CsProjFileTest {
         }
         Files.copy(file1_xUnit.getFile().toPath(), testFile.toPath());
 
-        assertThat(getVersion(testFile)).isNull();
+        assertThat(getVersion(testFile)).isEqualTo("LegacyVersionToBeRemoved");
 
         final DotnetProjectFile projectFile = new CsProjFile(testFile, null);
         projectFile.setVersion("42.1337.0");
