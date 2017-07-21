@@ -146,6 +146,8 @@ public class CsProjFile implements DotnetProjectFile {
 
         setVersionPart("VersionPrefix", versionPrefix, "VersionSuffix");
         setVersionPart("VersionSuffix", versionSuffix, "VersionPrefix");
+        // Remove the Version tag if it exists.
+        setVersionPart("Version", null, null);
     }
 
     @Override

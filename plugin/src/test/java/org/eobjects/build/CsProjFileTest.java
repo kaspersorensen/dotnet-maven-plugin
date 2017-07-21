@@ -86,7 +86,7 @@ public class CsProjFileTest {
         }
         Files.copy(file1_xUnit.getFile().toPath(), testFile.toPath());
 
-        assertThat(getVersion(testFile)).isNull();
+        assertThat(getVersion(testFile)).isEqualTo("LegacyVersionToBeRemoved");
 
         final DotnetProjectFile projectFile = new CsProjFile(testFile, null);
         projectFile.setVersion("42.1337.0");
