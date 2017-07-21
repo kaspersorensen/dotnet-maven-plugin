@@ -10,7 +10,7 @@
 
 	<groupId>org.eobjects.build</groupId>
 	<artifactId>dotnet-maven-parent</artifactId>
-	<version>0.18-SNAPSHOT</version>
+	<version>0.19-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<properties>
