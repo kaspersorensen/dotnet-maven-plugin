@@ -26,7 +26,7 @@ public class CsProjFileTest {
 
     @Test
     public void testGetVersion() {
-        assertThat(file1_xUnit.getVersion()).isNull();
+        assertThat(file1_xUnit.getVersion()).isEqualTo("LegacyVersionToBeRemoved");
         assertThat(file2_msTest.getVersion()).isNull();
         assertThat(file3_webApp.getVersion()).isNotNull().isEqualTo("1.3.1-alpha");
     }
