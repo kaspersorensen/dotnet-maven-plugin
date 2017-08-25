@@ -1,6 +1,8 @@
 package org.eobjects.build;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -14,6 +16,9 @@ public class DotnetBuildMojo extends AbstractDotnetMojo {
     @Parameter(property = "dotnet.build.enabled", required = false, defaultValue = "true")
     private boolean buildEnabled;
 
+    @Parameter(property = "dotnet.build.framework", required = false)
+    private String buildFramework;
+
     public void execute() throws MojoExecutionException, MojoFailureException {
         if (!buildEnabled) {
             getLog().debug("Disabled, skipping");
@@ -26,7 +31,17 @@ public class DotnetBuildMojo extends AbstractDotnetMojo {
                 // restore first if needed
                 helper.executeCommand(subDirectory, "dotnet", "restore");
             }
-            helper.executeCommand(subDirectory, "dotnet", "build", "-c", helper.getBuildConfiguration());
+            final List<String> cmd = new ArrayList<>();
+            cmd.add("dotnet");
+            cmd.add("build");
+            cmd.add("-c");
+            cmd.add(helper.getBuildConfiguration());
+            if(buildFramework != null && !buildFramework.isEmpty())
+            {
+                cmd.add("-f");
+                cmd.add(buildFramework);
+            }
+            helper.executeCommand(subDirectory, cmd.toArray(new String[cmd.size()]));
         }
     }
 }

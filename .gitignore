@@ -8,3 +8,6 @@ target/
 *.sln
 *.xproj
 *.xproj.user
+
+.idea/
+*.iml
