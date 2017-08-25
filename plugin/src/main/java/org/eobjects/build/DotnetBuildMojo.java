@@ -36,8 +36,7 @@ public class DotnetBuildMojo extends AbstractDotnetMojo {
             cmd.add("build");
             cmd.add("-c");
             cmd.add(helper.getBuildConfiguration());
-            if(buildFramework != null && !buildFramework.isEmpty())
-            {
+            if(buildFramework != null && !buildFramework.isEmpty()){
                 cmd.add("-f");
                 cmd.add(buildFramework);
             }
