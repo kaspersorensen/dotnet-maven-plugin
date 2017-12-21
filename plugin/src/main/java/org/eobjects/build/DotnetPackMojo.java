@@ -33,9 +33,14 @@ public class DotnetPackMojo extends AbstractDotnetMojo {
         }
 
         final PluginHelper helper = getPluginHelper();
+
         for (File subDirectory : helper.getProjectDirectories()) {
             final String output = helper.getNugetPackageDir(subDirectory).getPath();
-            helper.executeCommand(subDirectory, "dotnet", "pack", "-o", output, "-c", helper.getBuildConfiguration());
+            
+            // Optionally target a particular framework to pack for. Linux-based dotnet cannot build/pack NET45 easily.
+            final String optFramework = helper.getBuildTargetFramework() == "" ? "": "/p:TargetFrameworks=" + helper.getBuildTargetFramework(); 
+
+            helper.executeCommand(subDirectory, "dotnet", "pack", "-o", output, "-c", helper.getBuildConfiguration(), optFramework);
 
             final DotnetProjectFile projectFile = getPluginHelper().getProjectFile(subDirectory);
 
