@@ -23,7 +23,7 @@ public abstract class AbstractDotnetMojo extends AbstractMojo {
     @Parameter(property = "dotnet.configuration", required = false, defaultValue = "Release")
     private String buildConfiguration;
 
-    @Parameter(property = PluginHelper.PROPERTY_TARGET_FRAMEWORK, required = false, defaultValue = "")
+    @Parameter(property = "dotnet.build.framework", required = false, defaultValue = "")
     private String buildTargetFramework;
 
     public PluginHelper getPluginHelper() {
