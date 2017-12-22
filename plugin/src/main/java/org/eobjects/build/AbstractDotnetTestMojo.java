@@ -21,6 +21,12 @@ public abstract class AbstractDotnetTestMojo extends AbstractDotnetMojo {
     public void executeInternal() throws MojoFailureException {
         final PluginHelper helper = getPluginHelper();
         ArrayList<String> argsList = new ArrayList<String>(Arrays.asList("dotnet", testCommand, "-c", helper.getBuildConfiguration()));
+        
+        if (helper.getBuildTargetFramework() != "")
+        {
+        	argsList.add("-f");
+        	argsList.add(helper.getBuildTargetFramework());
+        }
         if(outputXml != null) {
             outputXml.getParentFile().mkdirs();
             argsList.add("-xml");

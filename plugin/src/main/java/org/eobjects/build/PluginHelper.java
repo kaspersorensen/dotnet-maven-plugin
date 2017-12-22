@@ -16,10 +16,12 @@ public final class PluginHelper {
     public static final String PROPERTY_BASEDIR = "${project.basedir}";
 
     public static final String PROPERTY_BUILD_DIR = "${project.build.directory}";
+    
+    public static final String PROPERTY_TARGET_FRAMEWORK = "${dotnet.build.framework}";
 
     public static PluginHelper get(Log log, File basedir, Map<String, String> environment, File dotnetPackOutput,
-            String buildConfiguration, boolean skip) {
-        return new PluginHelper(log, basedir, environment, dotnetPackOutput, buildConfiguration, skip);
+            String buildConfiguration, String buildTargetFramework, boolean skip) {
+        return new PluginHelper(log, basedir, environment, dotnetPackOutput, buildConfiguration, buildTargetFramework, skip);
     }
 
     private final File basedir;
@@ -27,15 +29,17 @@ public final class PluginHelper {
     private final boolean skip;
     private final File dotnetPackOutput;
     private final String buildConfiguration;
+    private final String buildTargetFramework;
     private final Log log;
 
     private PluginHelper(Log log, File basedir, Map<String, String> environment, File dotnetPackOutput,
-            String buildConfiguration, boolean skip) {
+            String buildConfiguration, String buildTargetFramework, boolean skip) {
         this.log = log;
         this.basedir = basedir;
         this.environment = environment == null ? Collections.<String, String> emptyMap() : environment;
         this.buildConfiguration = buildConfiguration == null ? "Release" : buildConfiguration;
         this.dotnetPackOutput = dotnetPackOutput == null ? new File("bin") : dotnetPackOutput;
+        this.buildTargetFramework = buildTargetFramework == null ? "" : buildTargetFramework;
         this.skip = skip;
     }
 
@@ -152,6 +156,10 @@ public final class PluginHelper {
 
     public String getBuildConfiguration() {
         return buildConfiguration;
+    }
+
+    public String getBuildTargetFramework() {
+        return buildTargetFramework;
     }
 
     public DotnetProjectFile getProjectFile(File directory) {
