@@ -38,6 +38,7 @@ public class DotnetNugetAddMojo extends AbstractDotnetMojo {
                 }
                 final File nugetPackage = helper.getNugetPackage(subDirectory);
                 final String nugetPackagePath = nugetPackage.getCanonicalPath();
+                System.out.println("[Install] =======> Preparing Push to "+targetPath); 
                 helper.executeCommand(subDirectory, "dotnet", "nuget", "push", nugetPackagePath, "-s", targetPath);
             } catch (Exception e) {
                 throw new MojoFailureException("Command [nuget add] failed!", e);

@@ -20,25 +20,28 @@ public final class PluginHelper {
     public static final String PROPERTY_TARGET_FRAMEWORK = "${dotnet.build.framework}";
 
     public static PluginHelper get(Log log, File basedir, Map<String, String> environment, File dotnetPackOutput,
-            String buildConfiguration, String buildTargetFramework, boolean skip) {
-        return new PluginHelper(log, basedir, environment, dotnetPackOutput, buildConfiguration, buildTargetFramework, skip);
+           String repositoryKey, String buildConfiguration, String buildTargetFramework, boolean skip) {
+        return new PluginHelper(log, basedir, environment, dotnetPackOutput, repositoryKey, buildConfiguration, buildTargetFramework, skip);
     }
 
     private final File basedir;
     private final Map<String, String> environment;
     private final boolean skip;
     private final File dotnetPackOutput;
+    private final String repositoryKey;
     private final String buildConfiguration;
     private final String buildTargetFramework;
     private final Log log;
 
-    private PluginHelper(Log log, File basedir, Map<String, String> environment, File dotnetPackOutput,
+    private PluginHelper(Log log, File basedir, Map<String, String> environment, File dotnetPackOutput, String repositoryKey,
             String buildConfiguration, String buildTargetFramework, boolean skip) {
         this.log = log;
         this.basedir = basedir;
         this.environment = environment == null ? Collections.<String, String> emptyMap() : environment;
         this.buildConfiguration = buildConfiguration == null ? "Release" : buildConfiguration;
         this.dotnetPackOutput = dotnetPackOutput == null ? new File("bin") : dotnetPackOutput;
+        this.repositoryKey = repositoryKey;
+        System.out.println("=============> Repository Key "+repositoryKey);
         this.buildTargetFramework = buildTargetFramework == null ? "" : buildTargetFramework;
         this.skip = skip;
     }
@@ -154,6 +157,10 @@ public final class PluginHelper {
         }
     }
 
+    public String getRepositoryKey(){
+    	return this.repositoryKey;
+    }
+    
     public String getBuildConfiguration() {
         return buildConfiguration;
     }
