@@ -14,9 +14,6 @@ public class DotnetNugetPushMojo extends AbstractDotnetMojo {
     @Parameter(property = "nuget.push.source", required = false)
     private String repository;
     
-    @Parameter(property = "dotnet.repository.key", required = false, defaultValue = "")
-    private String repositoryKey;
-
     @Parameter(property = "nuget.push.enabled", required = false, defaultValue = "true")
     private boolean nugetPushEnabled;
 
@@ -36,10 +33,12 @@ public class DotnetNugetPushMojo extends AbstractDotnetMojo {
             try {
                 final File nugetPackage = helper.getNugetPackage(subDirectory);
                 final String repositoryKey = helper.getRepositoryKey();
-                System.out.println("%%%% Repository Key "+repositoryKey);
                 final String nugetPackagePath = nugetPackage.getCanonicalPath();
-                System.out.println("[Deploy] =======> Preparing Push to "+nugetPackagePath+ " to "+repository);
-                helper.executeCommand(subDirectory, "dotnet", "nuget", "push", nugetPackagePath, repositoryKey , "-s", repository);
+                if(repositoryKey == null || repositoryKey.isEmpty())
+                {
+                	helper.executeCommand(subDirectory, "dotnet", "nuget", "push", nugetPackagePath, "-s", repository);
+                }
+                else helper.executeCommand(subDirectory, "dotnet", "nuget", "push", nugetPackagePath, "-k", repositoryKey , "-s", repository);
             } catch (Exception e) {
                 throw new MojoFailureException("Command [dotnet nuget push] failed!", e);
             }

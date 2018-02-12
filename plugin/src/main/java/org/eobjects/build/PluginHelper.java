@@ -41,7 +41,6 @@ public final class PluginHelper {
         this.buildConfiguration = buildConfiguration == null ? "Release" : buildConfiguration;
         this.dotnetPackOutput = dotnetPackOutput == null ? new File("bin") : dotnetPackOutput;
         this.repositoryKey = repositoryKey;
-        System.out.println("=============> Repository Key "+repositoryKey);
         this.buildTargetFramework = buildTargetFramework == null ? "" : buildTargetFramework;
         this.skip = skip;
     }
