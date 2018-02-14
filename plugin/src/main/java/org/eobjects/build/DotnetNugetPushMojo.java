@@ -1,6 +1,9 @@
 package org.eobjects.build;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -13,7 +16,7 @@ public class DotnetNugetPushMojo extends AbstractDotnetMojo {
 
     @Parameter(property = "nuget.push.source", required = false)
     private String repository;
-
+    
     @Parameter(property = "nuget.push.enabled", required = false, defaultValue = "true")
     private boolean nugetPushEnabled;
 
@@ -32,8 +35,20 @@ public class DotnetNugetPushMojo extends AbstractDotnetMojo {
         for (File subDirectory : helper.getProjectDirectories()) {
             try {
                 final File nugetPackage = helper.getNugetPackage(subDirectory);
+                final String repositoryKey = helper.getRepositoryKey();
                 final String nugetPackagePath = nugetPackage.getCanonicalPath();
-                helper.executeCommand(subDirectory, "dotnet", "nuget", "push", nugetPackagePath, "-s", repository);
+                
+                final List<String> cmd = new ArrayList<>(Arrays.asList("dotnet", "nuget", "push"));
+                cmd.add(nugetPackagePath);
+                cmd.add("-s");
+                cmd.add(repository);
+                if (repositoryKey != null && !repositoryKey.isEmpty()) {
+                  cmd.add("-k");
+                  cmd.add(repositoryKey);
+                }
+                helper.executeCommand(subDirectory, cmd.toArray((new String[cmd.size()])));
+                
+                
             } catch (Exception e) {
                 throw new MojoFailureException("Command [dotnet nuget push] failed!", e);
             }
