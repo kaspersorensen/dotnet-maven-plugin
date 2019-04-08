@@ -16,12 +16,13 @@ public final class PluginHelper {
     public static final String PROPERTY_BASEDIR = "${project.basedir}";
 
     public static final String PROPERTY_BUILD_DIR = "${project.build.directory}";
-    
+
     public static final String PROPERTY_TARGET_FRAMEWORK = "${dotnet.build.framework}";
 
     public static PluginHelper get(Log log, File basedir, Map<String, String> environment, File dotnetPackOutput,
-           String repositoryKey, String buildConfiguration, String buildTargetFramework, boolean skip) {
-        return new PluginHelper(log, basedir, environment, dotnetPackOutput, repositoryKey, buildConfiguration, buildTargetFramework, skip);
+            String repositoryKey, String buildConfiguration, String buildTargetFramework, boolean skip) {
+        return new PluginHelper(log, basedir, environment, dotnetPackOutput, repositoryKey, buildConfiguration,
+                buildTargetFramework, skip);
     }
 
     private final File basedir;
@@ -33,8 +34,8 @@ public final class PluginHelper {
     private final String buildTargetFramework;
     private final Log log;
 
-    private PluginHelper(Log log, File basedir, Map<String, String> environment, File dotnetPackOutput, String repositoryKey,
-            String buildConfiguration, String buildTargetFramework, boolean skip) {
+    private PluginHelper(Log log, File basedir, Map<String, String> environment, File dotnetPackOutput,
+            String repositoryKey, String buildConfiguration, String buildTargetFramework, boolean skip) {
         this.log = log;
         this.basedir = basedir;
         this.environment = environment == null ? Collections.<String, String> emptyMap() : environment;
@@ -125,8 +126,13 @@ public final class PluginHelper {
     }
 
     public void executeCommand(File subDirectory, String... command) throws MojoFailureException {
+        final String commandAsString = Arrays.toString(command);
+
         final ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.directory(subDirectory);
+
+        log.info("Command (in " + subDirectory + ") " + commandAsString + " running");
+
         for (Entry<String, String> entry : environment.entrySet()) {
             final String key = entry.getKey();
             if (key != null) {
@@ -135,6 +141,7 @@ public final class PluginHelper {
                     value = "";
                 }
                 processBuilder.environment().put(key, value);
+                log.debug("Adding environment variable: " + key + "=" + value);
             }
         }
         processBuilder.inheritIO();
@@ -143,23 +150,23 @@ public final class PluginHelper {
         try {
             final Process process = processBuilder.start();
             exitCode = process.waitFor();
+            log.debug("Command (in " + subDirectory + ") " + commandAsString + " exited with code " + exitCode);
         } catch (Exception e) {
-            throw new MojoFailureException("Command (in " + subDirectory + ") " + Arrays.toString(command) + " failed",
-                    e);
+            throw new MojoFailureException("Command (in " + subDirectory + ") " + commandAsString + " failed", e);
         }
 
         if (exitCode == 0) {
             // success
         } else {
-            throw new MojoFailureException("Command (in " + subDirectory + ") " + Arrays.toString(command)
+            throw new MojoFailureException("Command (in " + subDirectory + ") " + commandAsString
                     + " returned non-zero exit code: " + exitCode);
         }
     }
 
-    public String getRepositoryKey(){
-    	return this.repositoryKey;
+    public String getRepositoryKey() {
+        return this.repositoryKey;
     }
-    
+
     public String getBuildConfiguration() {
         return buildConfiguration;
     }
